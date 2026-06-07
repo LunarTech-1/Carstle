@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carstle — Coming Soon</title>
+  <meta name="description" content="Kenya's home for repairable, vintage and project vehicles. Where overlooked cars become extraordinary ones." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C97A;
+      --gold-dim: #8B6F2E;
+      --black: #0A0A08;
+      --surface: #111110;
+      --surface-2: #1A1A18;
+      --surface-3: #242422;
+      --border: rgba(201, 168, 76, 0.15);
+      --border-strong: rgba(201, 168, 76, 0.35);
+      --text-primary: #F0EDE4;
+      --text-secondary: #9A9688;
+      --text-dim: #5A5850;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text-primary);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.4;
+    }
+
+    /* Radial glow */
+    .bg-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: pulse-glow 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    /* Grid lines */
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* Main layout */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      animation: fade-down 0.8s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fade-down {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-mark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* SVG Logo mark inline */
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+    }
+
+    .logo-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+    }
+
+    .header-tag {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    /* Hero */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      text-align: center;
+      position: relative;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      animation: fade-up 0.8s 0.2s ease forwards;
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .eyebrow::before, .eyebrow::after {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--gold-dim);
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(42px, 7vw, 88px);
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      animation: fade-up 0.8s 0.35s ease forwards;
+      opacity: 0;
+    }
+
+    h1 span {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(16px, 2.5vw, 22px);
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+      max-width: 560px;
+      line-height: 1.5;
+      font-style: italic;
+      animation: fade-up 0.8s 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    /* Divider */
+    .gold-line {
+      width: 48px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 48px;
+      animation: fade-up 0.8s 0.6s ease forwards;
+      opacity: 0;
+    }
+
+    /* Email form */
+    .form-wrap {
+      width: 100%;
+      max-width: 480px;
+      animation: fade-up 0.8s 0.65s ease forwards;
+      opacity: 0;
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+      text-align: left;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .form-row:focus-within {
+      border-color: var(--gold);
+    }
+
+    .form-row input {
+      flex: 1;
+      background: var(--surface-2);
+      border: none;
+      outline: none;
+      padding: 14px 18px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+    }
+
+    .form-row input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .form-row button {
+      background: var(--gold);
+      border: none;
+      padding: 14px 24px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      color: var(--black);
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .form-row button:hover {
+      background: var(--gold-light);
+    }
+
+    .form-note {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+      text-align: left;
+      margin-top: 8px;
+      animation: fade-up 0.8s 0.75s ease forwards;
+      opacity: 0;
+    }
+
+    /* Success state */
+    .success-msg {
+      display: none;
+      font-size: 12px;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-align: center;
+      padding: 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      background: var(--surface-2);
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* Pillars */
+    .pillars {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 56px;
+      width: 100%;
+      max-width: 680px;
+      animation: fade-up 0.8s 0.85s ease forwards;
+      opacity: 0;
+    }
+
+    .pillar {
+      flex: 1;
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .pillar:last-child { border-right: none; }
+
+    .pillar-num {
+      font-size: 10px;
+      color: var(--gold-dim);
+      letter-spacing: 0.2em;
+      margin-bottom: 6px;
+    }
+
+    .pillar-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .pillar-sub {
+      font-size: 10px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      letter-spacing: 0.03em;
+    }
+
+    /* WhatsApp CTA */
+    .whatsapp-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+      animation: fade-up 0.8s 0.95s ease forwards;
+      opacity: 0;
+    }
+
+    .whatsapp-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+
+    .whatsapp-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .wa-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #25D366;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer {
+      padding: 24px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: fade-up 0.8s 1s ease forwards;
+      opacity: 0;
+    }
+
+    .footer-copy {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+    }
+
+    .social-row {
+      display: flex;
+      gap: 20px;
+    }
+
+    .social-row a {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.15em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .social-row a:hover { color: var(--gold); }
+
+    /* Countdown */
+    .countdown {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 48px;
+      animation: fade-up 0.8s 0.55s ease forwards;
+      opacity: 0;
+    }
+
+    .cd-unit {
+      text-align: center;
+    }
+
+    .cd-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+      line-height: 1;
+      display: block;
+    }
+
+    .cd-label {
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .cd-sep {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--gold-dim);
+      padding-top: 4px;
+    }
+
+    /* Horizontal rule with text */
+    .or-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 480px;
+      margin: 16px 0;
+      animation: fade-up 0.8s 0.8s ease forwards;
+      opacity: 0;
+    }
+
+    .or-divider::before, .or-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .or-divider span {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      header { padding: 20px 20px; }
+      .hero { padding: 40px 20px; }
+      footer { padding: 20px; flex-direction: column; gap: 12px; text-align: center; }
+      .pillars { flex-direction: column; }
+      .pillar { border-right: none; border-bottom: 1px solid var(--border); }
+      .pillar:last-child { border-bottom: none; }
+      h1 { font-size: 48px; }
+      .countdown { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="grid-overlay"></div>
+
+<div class="page">
+
+  <!-- Header -->
+  <header>
+    <div class="logo-mark">
+      <!-- Inline SVG crest placeholder — replace with actual logo file -->
+      <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 2L4 8V20C4 27 11 32 18 34C25 32 32 27 32 20V8L18 2Z" fill="#1A1A18" stroke="#C9A84C" stroke-width="1"/>
+        <path d="M8 8H28V10H8V8Z" fill="#C9A84C"/>
+        <path d="M10 6H13V8H10V6ZM16 6H20V8H16V6ZM23 6H26V8H23V6Z" fill="#C9A84C"/>
+        <path d="M9 13H27V14C27 14 24 16 18 16C12 16 9 14 9 14V13Z" fill="#C9A84C" opacity="0.4"/>
+        <circle cx="14" cy="19" r="2" fill="#C9A84C"/>
+        <circle cx="22" cy="19" r="2" fill="#C9A84C"/>
+        <path d="M12 22H24V23H12V22Z" fill="#C9A84C" opacity="0.6"/>
+      </svg>
+      <span class="logo-text">Carstle</span>
+    </div>
+    <span class="header-tag">Kenya · Est. 2026</span>
+  </header>
+
+  <!-- Hero -->
+  <main class="hero">
+
+    <p class="eyebrow">Something significant is coming</p>
+
+    <h1>Where overlooked cars<br>become <span>extraordinary</span></h1>
+
+    <p class="subtitle">Kenya's first structured marketplace for repairable, project, and vintage vehicles — and the specialists who transform them.</p>
+
+    <div class="gold-line"></div>
+
+    <!-- Countdown -->
+    <div class="countdown" id="countdown">
+      <div class="cd-unit"><span class="cd-num" id="cd-days">00</span><span class="cd-label">Days</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-num" id="cd-hours">00</span><span class="cd-label">Hours</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-num" id="cd-mins">00</span><span class="cd-label">Minutes</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-num" id="cd-secs">00</span><span class="cd-label">Seconds</span></div>
+    </div>
+
+    <!-- Email capture -->
+    <label class="form-label" for="email-input">Get early access — be first when we launch</label>
+    <div class="form-wrap">
+      <div class="form-row">
+        <input type="email" id="email-input" placeholder="your@email.com" autocomplete="email" />
+        <button onclick="handleSubmit()">Notify Me</button>
+      </div>
+    </div>
+    <p class="form-note">No spam. One email when we launch. Unsubscribe anytime.</p>
+
+    <div class="success-msg" id="success-msg">
+      ✦ &nbsp; You're on the list. We'll reach out when Carstle launches.
+    </div>
+
+    <!-- OR divider -->
+    <div class="or-divider"><span>or</span></div>
+
+    <!-- WhatsApp -->
+    <div class="whatsapp-row">
+      <a href="https://wa.me/254700000000?text=I'm%20interested%20in%20Carstle%20-%20Kenya's%20vehicle%20marketplace" class="whatsapp-btn" target="_blank" rel="noopener">
+        <span class="wa-dot"></span>
+        Chat with us on WhatsApp
+      </a>
+    </div>
+
+    <!-- Three pillars -->
+    <div class="pillars">
+      <div class="pillar">
+        <p class="pillar-num">01</p>
+        <p class="pillar-title">Discover</p>
+        <p class="pillar-sub">Find repairable, project and vintage vehicles with real condition data</p>
+      </div>
+      <div class="pillar">
+        <p class="pillar-num">02</p>
+        <p class="pillar-title">Transform</p>
+        <p class="pillar-sub">Connect with verified specialists who know these cars intimately</p>
+      </div>
+      <div class="pillar">
+        <p class="pillar-num">03</p>
+        <p class="pillar-title">Own</p>
+        <p class="pillar-sub">Every vehicle leaves Carstle documented, verified and extraordinary</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p class="footer-copy">© 2026 Carstle · carstle.co.ke · Nairobi, Kenya</p>
+    <div class="social-row">
+      <a href="https://instagram.com/carstleke" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://tiktok.com/@carstleke" target="_blank" rel="noopener">TikTok</a>
+      <a href="mailto:hello@carstle.co.ke">Contact</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Countdown to launch — set your target date here
+  const launchDate = new Date('2025-10-01T00:00:00');
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = launchDate - now;
+
+    if (diff <= 0) {
+      document.getElementById('countdown').style.display = 'none';
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+    document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // Email capture
+  function handleSubmit() {
+    const input = document.getElementById('email-input');
+    const email = input.value.trim();
+
+    if (!email || !email.includes('@')) {
+      input.style.borderLeft = '2px solid #C94C4C';
+      input.focus();
+      return;
+    }
+
+    // Store in localStorage as fallback
+    // Replace this with your actual API call or Mailchimp integration
+    const emails = JSON.parse(localStorage.getItem('carstle_emails') || '[]');
+    emails.push({ email, timestamp: new Date().toISOString() });
+    localStorage.setItem('carstle_emails', JSON.stringify(emails));
+
+    // Show success
+    document.querySelector('.form-wrap').style.display = 'none';
+    document.querySelector('.form-label').style.display = 'none';
+    document.querySelector('.form-note').style.display = 'none';
+    document.querySelector('.or-divider').style.display = 'none';
+    document.getElementById('success-msg').style.display = 'block';
+  }
+
+  // Enter key submit
+  document.getElementById('email-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleSubmit();
+  });
+</script>
+
+</body>
+</html>
